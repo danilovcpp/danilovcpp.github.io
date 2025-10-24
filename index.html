@@ -16,7 +16,40 @@
         </header>
 
         <main class="main-content">
-            <section class="controls-section">
+            <section class="trainer-selection">
+                <div class="card">
+                    <h2>Выберите тренажер</h2>
+                    <div class="trainer-grid">
+                        <div class="trainer-card" data-trainer="basic">
+                            <div class="trainer-icon">🎯</div>
+                            <h3>Базовый режим</h3>
+                            <p>Практика работы с абакусом и ввод чисел вручную</p>
+                        </div>
+                        <div class="trainer-card" data-trainer="flash-anzan">
+                            <div class="trainer-icon">⚡</div>
+                            <h3>Flash Anzan</h3>
+                            <p>Быстрые вычисления (Speed Math) - числа появляются на экране на доли секунды</p>
+                        </div>
+                        <div class="trainer-card" data-trainer="guess-result">
+                            <div class="trainer-icon">🎲</div>
+                            <h3>Угадай результат</h3>
+                            <p>Решайте примеры и вводите правильный ответ</p>
+                        </div>
+                        <div class="trainer-card" data-trainer="mental-visualization">
+                            <div class="trainer-icon">🧠</div>
+                            <h3>Mental Visualization</h3>
+                            <p>Абакус из головы - визуализация без физического инструмента</p>
+                        </div>
+                        <div class="trainer-card" data-trainer="soroban">
+                            <div class="trainer-icon">🎴</div>
+                            <h3>Соробан (Японский абакус)</h3>
+                            <p>Традиционный японский счётный инструмент для развития навыков быстрого счёта</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="controls-section trainer-section" data-mode="basic">
                 <div class="card">
                     <h2>Панель управления</h2>
                     <div class="controls">
@@ -37,7 +70,7 @@
                 </div>
             </section>
 
-            <section class="abacus-section">
+            <section class="abacus-section trainer-section" data-mode="basic">
                 <div class="card abacus-card">
                     <h2>Соробан (Японский абакус)</h2>
                     <div class="abacus-container">
@@ -52,7 +85,7 @@
                 </div>
             </section>
 
-            <section class="tutorial-section">
+            <section class="tutorial-section trainer-section" data-mode="basic">
                 <div class="card">
                     <h2>Как использовать абакус</h2>
                     <div class="tutorial-grid">
@@ -80,7 +113,7 @@
                 </div>
             </section>
 
-            <section class="practice-section">
+            <section class="practice-section trainer-section" data-mode="basic">
                 <div class="card">
                     <h2>Практика</h2>
                     <div class="practice-content">
@@ -91,6 +124,82 @@
                             <button id="new-challenge" class="btn btn-secondary">Новое задание</button>
                         </div>
                         <div class="result-message" id="result-message"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="flash-anzan-section trainer-section" data-mode="flash-anzan" style="display: none;">
+                <div class="card">
+                    <h2>Flash Anzan - Тренажер быстрых вычислений</h2>
+
+                    <div class="flash-settings">
+                        <div class="setting-group">
+                            <label for="flash-count">Количество чисел:</label>
+                            <select id="flash-count" class="flash-select">
+                                <option value="3">3 числа</option>
+                                <option value="5" selected>5 чисел</option>
+                                <option value="10">10 чисел</option>
+                                <option value="15">15 чисел</option>
+                                <option value="20">20 чисел</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="flash-speed">Скорость (мс):</label>
+                            <select id="flash-speed" class="flash-select">
+                                <option value="1500">1500 мс (легко)</option>
+                                <option value="1000" selected>1000 мс (средне)</option>
+                                <option value="700">700 мс (сложно)</option>
+                                <option value="500">500 мс (эксперт)</option>
+                                <option value="300">300 мс (мастер)</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-group">
+                            <label for="flash-digits">Количество цифр:</label>
+                            <select id="flash-digits" class="flash-select">
+                                <option value="1">1 цифра</option>
+                                <option value="2" selected>2 цифры</option>
+                                <option value="3">3 цифры</option>
+                                <option value="4">4 цифры</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flash-display">
+                        <div id="flash-number" class="flash-number"></div>
+                        <div id="flash-progress" class="flash-progress"></div>
+                    </div>
+
+                    <div class="flash-controls">
+                        <button id="flash-start" class="btn btn-primary">Начать</button>
+                        <button id="flash-stop" class="btn btn-secondary" style="display: none;">Остановить</button>
+                    </div>
+
+                    <div class="flash-answer" id="flash-answer-section" style="display: none;">
+                        <h3>Введите сумму всех чисел:</h3>
+                        <input type="number" id="flash-answer-input" class="flash-input" placeholder="Ваш ответ">
+                        <button id="flash-check" class="btn btn-accent">Проверить</button>
+                    </div>
+
+                    <div id="flash-result" class="flash-result"></div>
+
+                    <div class="flash-stats" id="flash-stats" style="display: none;">
+                        <h3>Статистика:</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Правильные ответы:</span>
+                                <span id="flash-correct" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Неправильные:</span>
+                                <span id="flash-wrong" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Точность:</span>
+                                <span id="flash-accuracy" class="stat-value">0%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

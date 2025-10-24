@@ -250,10 +250,282 @@ class PracticeMode {
     }
 }
 
+// Flash Anzan Trainer
+class FlashAnzanTrainer {
+    constructor() {
+        this.numbers = [];
+        this.currentIndex = 0;
+        this.correctAnswer = 0;
+        this.isRunning = false;
+        this.stats = {
+            correct: 0,
+            wrong: 0
+        };
+        this.initControls();
+    }
+
+    initControls() {
+        document.getElementById('flash-start').addEventListener('click', () => this.start());
+        document.getElementById('flash-stop').addEventListener('click', () => this.stop());
+        document.getElementById('flash-check').addEventListener('click', () => this.checkAnswer());
+
+        // Allow Enter key to check answer
+        document.getElementById('flash-answer-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.checkAnswer();
+            }
+        });
+    }
+
+    start() {
+        const count = parseInt(document.getElementById('flash-count').value);
+        const speed = parseInt(document.getElementById('flash-speed').value);
+        const digits = parseInt(document.getElementById('flash-digits').value);
+
+        this.generateNumbers(count, digits);
+        this.currentIndex = 0;
+        this.isRunning = true;
+
+        // Hide controls and show stop button
+        document.getElementById('flash-start').style.display = 'none';
+        document.getElementById('flash-stop').style.display = 'inline-block';
+        document.getElementById('flash-answer-section').style.display = 'none';
+        document.getElementById('flash-result').textContent = '';
+        document.getElementById('flash-answer-input').value = '';
+
+        this.showNumbers(speed);
+    }
+
+    stop() {
+        this.isRunning = false;
+        document.getElementById('flash-start').style.display = 'inline-block';
+        document.getElementById('flash-stop').style.display = 'none';
+        document.getElementById('flash-number').textContent = '';
+        document.getElementById('flash-progress').textContent = '';
+    }
+
+    generateNumbers(count, digits) {
+        this.numbers = [];
+        const min = Math.pow(10, digits - 1);
+        const max = Math.pow(10, digits) - 1;
+
+        for (let i = 0; i < count; i++) {
+            const num = Math.floor(Math.random() * (max - min + 1)) + min;
+            this.numbers.push(num);
+        }
+
+        this.correctAnswer = this.numbers.reduce((sum, num) => sum + num, 0);
+        console.log('Generated numbers:', this.numbers, 'Sum:', this.correctAnswer);
+    }
+
+    async showNumbers(speed) {
+        const flashNumber = document.getElementById('flash-number');
+        const flashProgress = document.getElementById('flash-progress');
+
+        for (let i = 0; i < this.numbers.length; i++) {
+            if (!this.isRunning) break;
+
+            this.currentIndex = i;
+            flashProgress.textContent = `${i + 1} / ${this.numbers.length}`;
+
+            // Show number
+            flashNumber.textContent = this.numbers[i];
+            flashNumber.style.opacity = '1';
+            flashNumber.style.transform = 'scale(1)';
+
+            await this.delay(speed);
+
+            // Hide number with animation
+            flashNumber.style.opacity = '0';
+            flashNumber.style.transform = 'scale(0.8)';
+
+            await this.delay(200);
+        }
+
+        if (this.isRunning) {
+            this.finish();
+        }
+    }
+
+    finish() {
+        this.isRunning = false;
+        document.getElementById('flash-number').textContent = '?';
+        document.getElementById('flash-number').style.opacity = '1';
+        document.getElementById('flash-number').style.transform = 'scale(1)';
+        document.getElementById('flash-progress').textContent = 'Введите ответ';
+
+        // Show answer section
+        document.getElementById('flash-answer-section').style.display = 'block';
+        document.getElementById('flash-stop').style.display = 'none';
+        document.getElementById('flash-answer-input').focus();
+    }
+
+    checkAnswer() {
+        const userAnswer = parseInt(document.getElementById('flash-answer-input').value);
+        const resultElement = document.getElementById('flash-result');
+
+        if (isNaN(userAnswer)) {
+            resultElement.textContent = 'Пожалуйста, введите число';
+            resultElement.className = 'flash-result error';
+            return;
+        }
+
+        if (userAnswer === this.correctAnswer) {
+            this.stats.correct++;
+            resultElement.innerHTML = `
+                <div class="result-success">
+                    🎉 Правильно!<br>
+                    <small>Числа: ${this.numbers.join(' + ')} = ${this.correctAnswer}</small>
+                </div>
+            `;
+            resultElement.className = 'flash-result success';
+        } else {
+            this.stats.wrong++;
+            resultElement.innerHTML = `
+                <div class="result-error">
+                    ❌ Неправильно<br>
+                    <small>Ваш ответ: ${userAnswer}</small><br>
+                    <small>Правильный ответ: ${this.correctAnswer}</small><br>
+                    <small>Числа: ${this.numbers.join(' + ')}</small>
+                </div>
+            `;
+            resultElement.className = 'flash-result error';
+        }
+
+        this.updateStats();
+
+        // Reset for next round
+        setTimeout(() => {
+            document.getElementById('flash-start').style.display = 'inline-block';
+            document.getElementById('flash-answer-section').style.display = 'none';
+            document.getElementById('flash-number').textContent = '';
+            document.getElementById('flash-progress').textContent = '';
+            resultElement.textContent = '';
+        }, 4000);
+    }
+
+    updateStats() {
+        const statsElement = document.getElementById('flash-stats');
+        statsElement.style.display = 'block';
+
+        document.getElementById('flash-correct').textContent = this.stats.correct;
+        document.getElementById('flash-wrong').textContent = this.stats.wrong;
+
+        const total = this.stats.correct + this.stats.wrong;
+        const accuracy = total > 0 ? Math.round((this.stats.correct / total) * 100) : 0;
+        document.getElementById('flash-accuracy').textContent = `${accuracy}%`;
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+// Trainer Mode Manager
+class TrainerManager {
+    constructor(abacus) {
+        this.abacus = abacus;
+        this.currentMode = 'basic';
+        this.initTrainerSelection();
+    }
+
+    initTrainerSelection() {
+        const trainerCards = document.querySelectorAll('.trainer-card');
+
+        // Set first trainer as active by default
+        trainerCards[0].classList.add('active');
+
+        trainerCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Remove active class from all cards
+                trainerCards.forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked card
+                card.classList.add('active');
+
+                // Get selected trainer mode
+                const mode = card.dataset.trainer;
+                this.switchMode(mode);
+            });
+        });
+    }
+
+    switchMode(mode) {
+        this.currentMode = mode;
+        console.log(`Switched to mode: ${mode}`);
+
+        // Hide all trainer sections
+        const allSections = document.querySelectorAll('.trainer-section');
+        allSections.forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Show sections for the selected mode
+        const activeSections = document.querySelectorAll(`.trainer-section[data-mode="${mode}"]`);
+        activeSections.forEach(section => {
+            section.style.display = 'block';
+        });
+
+        // Show mode-specific message
+        let message = '';
+        switch(mode) {
+            case 'basic':
+                message = 'Базовый режим: практикуйте работу с абакусом';
+                break;
+            case 'flash-anzan':
+                message = 'Flash Anzan: режим быстрых вычислений';
+                break;
+            case 'guess-result':
+                message = 'Угадай результат: решайте примеры (в разработке)';
+                break;
+            case 'mental-visualization':
+                message = 'Mental Visualization: визуализация абакуса (в разработке)';
+                break;
+            case 'soroban':
+                message = 'Соробан: традиционный японский абакус (в разработке)';
+                break;
+        }
+
+        if (message) {
+            this.showMessage(message);
+        }
+    }
+
+    showMessage(text) {
+        // Create temporary notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+            max-width: 300px;
+        `;
+        notification.textContent = text;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
     const abacus = new Abacus(6);
     const practice = new PracticeMode(abacus);
+    const flashAnzan = new FlashAnzanTrainer();
+    const trainerManager = new TrainerManager(abacus);
 
     // Set number button
     document.getElementById('set-number').addEventListener('click', () => {
