@@ -1,14 +1,313 @@
-// Mobile menu toggle
-const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-const navMenu = document.querySelector('.nav-menu');
+// Abacus class to manage the soroban
+class Abacus {
+    constructor(columns = 6) {
+        this.columns = columns;
+        this.values = new Array(columns).fill(0);
+        this.init();
+    }
 
-if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-    });
+    init() {
+        const abacusElement = document.getElementById('abacus');
+        abacusElement.innerHTML = '';
+
+        // Create columns from right to left (ones, tens, hundreds, etc.)
+        for (let i = this.columns - 1; i >= 0; i--) {
+            const column = this.createColumn(i);
+            abacusElement.appendChild(column);
+        }
+
+        this.updateDisplay();
+    }
+
+    createColumn(index) {
+        const column = document.createElement('div');
+        column.className = 'column';
+        column.dataset.column = index;
+
+        // Add label
+        const label = document.createElement('div');
+        label.className = 'column-label';
+        const power = this.columns - 1 - index;
+        label.textContent = power === 0 ? '1' : `10${this.getSuperscript(power)}`;
+        column.appendChild(label);
+
+        // Create rod
+        const rod = document.createElement('div');
+        rod.className = 'rod';
+
+        // Create divider
+        const divider = document.createElement('div');
+        divider.className = 'divider';
+        rod.appendChild(divider);
+
+        // Create top beads container (1 bead worth 5)
+        const topBeads = document.createElement('div');
+        topBeads.className = 'top-beads';
+        const topBead = this.createBead('top', index);
+        topBeads.appendChild(topBead);
+        rod.appendChild(topBeads);
+
+        // Create bottom beads container (4 beads worth 1 each)
+        const bottomBeads = document.createElement('div');
+        bottomBeads.className = 'bottom-beads';
+        for (let j = 0; j < 4; j++) {
+            const bottomBead = this.createBead('bottom', index, j);
+            bottomBeads.appendChild(bottomBead);
+        }
+        rod.appendChild(bottomBeads);
+
+        column.appendChild(rod);
+        return column;
+    }
+
+    createBead(type, columnIndex, beadIndex = 0) {
+        const bead = document.createElement('div');
+        bead.className = 'bead';
+        bead.dataset.type = type;
+        bead.dataset.column = columnIndex;
+        bead.dataset.index = beadIndex;
+
+        bead.addEventListener('click', () => {
+            this.toggleBead(bead);
+        });
+
+        return bead;
+    }
+
+    toggleBead(bead) {
+        const column = parseInt(bead.dataset.column);
+        const type = bead.dataset.type;
+
+        if (type === 'top') {
+            // Toggle top bead (worth 5)
+            bead.classList.toggle('active');
+        } else {
+            // Toggle bottom bead (worth 1)
+            const index = parseInt(bead.dataset.index);
+            const columnElement = document.querySelector(`[data-column="${column}"]`);
+            const bottomBeads = columnElement.querySelectorAll('.bead[data-type="bottom"]');
+
+            // If clicking on a bead, toggle it and all beads below it
+            if (bead.classList.contains('active')) {
+                // Deactivate this bead and all above it
+                for (let i = 0; i <= index; i++) {
+                    bottomBeads[i].classList.remove('active');
+                }
+            } else {
+                // Activate this bead and all below it
+                for (let i = index; i < bottomBeads.length; i++) {
+                    bottomBeads[i].classList.add('active');
+                }
+            }
+        }
+
+        this.calculateValue(column);
+        this.updateDisplay();
+    }
+
+    calculateValue(column) {
+        const columnElement = document.querySelector(`[data-column="${column}"]`);
+        const topBead = columnElement.querySelector('.bead[data-type="top"]');
+        const bottomBeads = columnElement.querySelectorAll('.bead[data-type="bottom"]');
+
+        let value = 0;
+
+        // Add top bead value (5)
+        if (topBead.classList.contains('active')) {
+            value += 5;
+        }
+
+        // Add bottom beads value (1 each)
+        bottomBeads.forEach(bead => {
+            if (bead.classList.contains('active')) {
+                value += 1;
+            }
+        });
+
+        this.values[column] = value;
+    }
+
+    getValue() {
+        let total = 0;
+        for (let i = 0; i < this.columns; i++) {
+            const power = this.columns - 1 - i;
+            total += this.values[i] * Math.pow(10, power);
+        }
+        return total;
+    }
+
+    setValue(number) {
+        // Convert number to digits
+        const digits = String(number).padStart(this.columns, '0').split('').map(Number);
+
+        // Reset all beads
+        this.reset();
+
+        // Set each column
+        digits.forEach((digit, index) => {
+            const column = index;
+            this.setColumnValue(column, digit);
+        });
+
+        this.updateDisplay();
+    }
+
+    setColumnValue(column, value) {
+        const columnElement = document.querySelector(`[data-column="${column}"]`);
+        const topBead = columnElement.querySelector('.bead[data-type="top"]');
+        const bottomBeads = columnElement.querySelectorAll('.bead[data-type="bottom"]');
+
+        // Deactivate all beads first
+        topBead.classList.remove('active');
+        bottomBeads.forEach(bead => bead.classList.remove('active'));
+
+        // Set top bead if value >= 5
+        if (value >= 5) {
+            topBead.classList.add('active');
+            value -= 5;
+        }
+
+        // Set bottom beads
+        for (let i = bottomBeads.length - 1; i >= bottomBeads.length - value; i--) {
+            bottomBeads[i].classList.add('active');
+        }
+
+        this.values[column] = this.calculateColumnValue(column);
+    }
+
+    calculateColumnValue(column) {
+        const columnElement = document.querySelector(`[data-column="${column}"]`);
+        const topBead = columnElement.querySelector('.bead[data-type="top"]');
+        const bottomBeads = columnElement.querySelectorAll('.bead[data-type="bottom"]');
+
+        let value = 0;
+        if (topBead.classList.contains('active')) {
+            value += 5;
+        }
+        bottomBeads.forEach(bead => {
+            if (bead.classList.contains('active')) {
+                value += 1;
+            }
+        });
+
+        return value;
+    }
+
+    reset() {
+        const allBeads = document.querySelectorAll('.bead');
+        allBeads.forEach(bead => bead.classList.remove('active'));
+        this.values.fill(0);
+        this.updateDisplay();
+    }
+
+    updateDisplay() {
+        const displayValue = document.getElementById('display-value');
+        displayValue.textContent = this.getValue().toLocaleString();
+    }
+
+    getSuperscript(num) {
+        const superscripts = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+        return String(num).split('').map(d => superscripts[parseInt(d)]).join('');
+    }
 }
 
-// Smooth scroll for navigation links
+// Practice mode
+class PracticeMode {
+    constructor(abacus) {
+        this.abacus = abacus;
+        this.currentChallenge = 0;
+        this.generateChallenge();
+    }
+
+    generateChallenge() {
+        // Generate random number between 1 and 999999
+        this.currentChallenge = Math.floor(Math.random() * 999999) + 1;
+        document.getElementById('challenge-number').textContent = this.currentChallenge.toLocaleString();
+
+        // Clear result message
+        const resultMessage = document.getElementById('result-message');
+        resultMessage.textContent = '';
+        resultMessage.className = 'result-message';
+    }
+
+    checkAnswer() {
+        const abacusValue = this.abacus.getValue();
+        const resultMessage = document.getElementById('result-message');
+
+        if (abacusValue === this.currentChallenge) {
+            resultMessage.textContent = '🎉 Правильно! Отличная работа!';
+            resultMessage.className = 'result-message success';
+
+            // Auto-generate new challenge after 2 seconds
+            setTimeout(() => {
+                this.generateChallenge();
+                this.abacus.reset();
+            }, 2000);
+        } else {
+            resultMessage.textContent = `❌ Неправильно. Ваш ответ: ${abacusValue.toLocaleString()}. Попробуйте еще раз!`;
+            resultMessage.className = 'result-message error';
+        }
+    }
+}
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', () => {
+    const abacus = new Abacus(6);
+    const practice = new PracticeMode(abacus);
+
+    // Set number button
+    document.getElementById('set-number').addEventListener('click', () => {
+        const input = document.getElementById('number-input');
+        const value = parseInt(input.value) || 0;
+
+        if (value >= 0 && value <= 999999) {
+            abacus.setValue(value);
+        } else {
+            alert('Пожалуйста, введите число от 0 до 999999');
+        }
+    });
+
+    // Reset button
+    document.getElementById('reset').addEventListener('click', () => {
+        abacus.reset();
+        document.getElementById('number-input').value = 0;
+    });
+
+    // Random number button
+    document.getElementById('random').addEventListener('click', () => {
+        const randomNum = Math.floor(Math.random() * 999999);
+        document.getElementById('number-input').value = randomNum;
+        abacus.setValue(randomNum);
+    });
+
+    // Check answer button
+    document.getElementById('check-answer').addEventListener('click', () => {
+        practice.checkAnswer();
+    });
+
+    // New challenge button
+    document.getElementById('new-challenge').addEventListener('click', () => {
+        practice.generateChallenge();
+        abacus.reset();
+    });
+
+    // Allow Enter key to set number
+    document.getElementById('number-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('set-number').click();
+        }
+    });
+
+    // Add some visual feedback on page load
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    }, 100);
+});
+
+// Add smooth scrolling for better UX
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -18,242 +317,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 behavior: 'smooth',
                 block: 'start'
             });
-            // Close mobile menu if open
-            if (navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-            }
         }
     });
 });
-
-// Header background on scroll
-const header = document.querySelector('.header');
-let lastScroll = 0;
-
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-
-    if (currentScroll > 100) {
-        header.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
-    } else {
-        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.05)';
-    }
-
-    lastScroll = currentScroll;
-});
-
-// Form submission
-const orderForm = document.getElementById('orderForm');
-
-if (orderForm) {
-    orderForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Get form data
-        const formData = new FormData(orderForm);
-        const data = Object.fromEntries(formData);
-
-        // Show success message
-        showNotification('Спасибо за заявку! Мы свяжемся с вами в ближайшее время.', 'success');
-
-        // Reset form
-        orderForm.reset();
-
-        // Log data to console (в реальном проекте здесь была бы отправка на сервер)
-        console.log('Данные заказа:', data);
-    });
-}
-
-// Notification function
-function showNotification(message, type = 'success') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span class="notification-icon">${type === 'success' ? '✓' : '✕'}</span>
-            <span class="notification-message">${message}</span>
-        </div>
-    `;
-
-    // Add styles
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: ${type === 'success' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f5576c'};
-        color: white;
-        padding: 20px 30px;
-        border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        z-index: 10000;
-        animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 3.5s;
-        min-width: 300px;
-    `;
-
-    // Add to body
-    document.body.appendChild(notification);
-
-    // Remove after 4 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 4000);
-}
-
-// Add notification animations to CSS dynamically
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    @keyframes slideOutRight {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(400px);
-            opacity: 0;
-        }
-    }
-
-    .notification-content {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .notification-icon {
-        width: 24px;
-        height: 24px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-`;
-document.head.appendChild(style);
-
-// Parallax effect for gradient orbs
-window.addEventListener('mousemove', (e) => {
-    const orbs = document.querySelectorAll('.gradient-orb');
-    const x = e.clientX / window.innerWidth;
-    const y = e.clientY / window.innerHeight;
-
-    orbs.forEach((orb, index) => {
-        const speed = (index + 1) * 20;
-        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
-    });
-});
-
-// Intersection Observer for animations on scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe all service cards and portfolio items
-document.querySelectorAll('.service-card, .portfolio-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
-
-// Play button interaction
-document.querySelectorAll('.portfolio-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const playButton = item.querySelector('.play-button');
-        playButton.textContent = playButton.textContent === '▶' ? '⏸' : '▶';
-
-        // Show notification
-        const title = item.querySelector('h3').textContent;
-        showNotification(`Воспроизведение: ${title}`, 'success');
-    });
-});
-
-// Phone number formatting
-const phoneInput = document.getElementById('phone');
-if (phoneInput) {
-    phoneInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, '');
-
-        if (value.length > 0) {
-            if (value[0] === '7' || value[0] === '8') {
-                value = '7' + value.substring(1);
-            } else {
-                value = '7' + value;
-            }
-        }
-
-        let formatted = '+7';
-        if (value.length > 1) {
-            formatted += ' (' + value.substring(1, 4);
-        }
-        if (value.length >= 5) {
-            formatted += ') ' + value.substring(4, 7);
-        }
-        if (value.length >= 8) {
-            formatted += '-' + value.substring(7, 9);
-        }
-        if (value.length >= 10) {
-            formatted += '-' + value.substring(9, 11);
-        }
-
-        e.target.value = formatted;
-    });
-}
-
-// Add loading animation to submit button
-const submitBtn = orderForm?.querySelector('button[type="submit"]');
-if (submitBtn) {
-    submitBtn.addEventListener('click', function() {
-        if (orderForm.checkValidity()) {
-            this.innerHTML = '<span class="loading-spinner"></span> Отправка...';
-            this.disabled = true;
-
-            setTimeout(() => {
-                this.innerHTML = 'Отправить заявку';
-                this.disabled = false;
-            }, 2000);
-        }
-    });
-}
-
-// Add spinner styles
-const spinnerStyle = document.createElement('style');
-spinnerStyle.textContent = `
-    .loading-spinner {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-top-color: white;
-        border-radius: 50%;
-        animation: spin 0.6s linear infinite;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(spinnerStyle);

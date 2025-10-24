@@ -3,260 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Запись песни на заказ | Профессиональная студия звукозаписи</title>
+    <title>Абакус - Интерактивное обучение счету</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <nav class="nav">
-                <div class="logo">
-                    <span class="logo-icon">🎵</span>
-                    <span class="logo-text">SongStudio</span>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="#hero">Главная</a></li>
-                    <li><a href="#services">Услуги</a></li>
-                    <li><a href="#portfolio">Портфолио</a></li>
-                    <li><a href="#order">Заказать</a></li>
-                </ul>
-                <button class="mobile-menu-btn">☰</button>
-            </nav>
-        </div>
-    </header>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">
+                <span class="gradient-text">Абакус</span>
+                <span class="subtitle">Древнее искусство быстрого счета</span>
+            </h1>
+        </header>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero">
-        <div class="hero-background">
-            <div class="gradient-orb orb-1"></div>
-            <div class="gradient-orb orb-2"></div>
-            <div class="gradient-orb orb-3"></div>
-        </div>
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <span class="title-line">Создадим вашу</span>
-                    <span class="title-line gradient-text">идеальную песню</span>
-                </h1>
-                <p class="hero-subtitle">
-                    Профессиональная запись, аранжировка и сведение треков любой сложности
-                </p>
-                <div class="hero-buttons">
-                    <a href="#order" class="btn btn-primary">Заказать песню</a>
-                    <a href="#portfolio" class="btn btn-secondary">Послушать примеры</a>
-                </div>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <div class="mouse">
-                <div class="wheel"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <h2 class="section-title">Наши услуги</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">🎤</div>
-                    <h3>Запись вокала</h3>
-                    <p>Профессиональная запись вокала в студии с качественным оборудованием</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🎹</div>
-                    <h3>Аранжировка</h3>
-                    <p>Создание музыкальной композиции с нуля или доработка существующей</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🎧</div>
-                    <h3>Сведение и мастеринг</h3>
-                    <p>Профессиональная обработка и доведение трека до студийного качества</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">✍️</div>
-                    <h3>Написание текста</h3>
-                    <p>Создание уникального текста песни под ваши пожелания и настроение</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🎸</div>
-                    <h3>Живые инструменты</h3>
-                    <p>Запись живых инструментов: гитара, барабаны, фортепиано и другие</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🎬</div>
-                    <h3>Полный цикл</h3>
-                    <p>Создание песни под ключ: от идеи до готового трека</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio">
-        <div class="container">
-            <h2 class="section-title">Наши работы</h2>
-            <div class="portfolio-grid">
-                <div class="portfolio-item">
-                    <div class="portfolio-image">
-                        <div class="play-button">▶</div>
-                    </div>
-                    <h3>Романтическая баллада</h3>
-                    <p>Поп-музыка • 3:45</p>
-                </div>
-                <div class="portfolio-item">
-                    <div class="portfolio-image">
-                        <div class="play-button">▶</div>
-                    </div>
-                    <h3>Энергичный рок</h3>
-                    <p>Рок • 4:12</p>
-                </div>
-                <div class="portfolio-item">
-                    <div class="portfolio-image">
-                        <div class="play-button">▶</div>
-                    </div>
-                    <h3>Летний хит</h3>
-                    <p>Электроника • 3:30</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Order Form Section -->
-    <section id="order" class="order">
-        <div class="container">
-            <div class="order-content">
-                <div class="order-info">
-                    <h2 class="section-title">Закажите свою песню</h2>
-                    <p class="order-description">
-                        Заполните форму, и мы свяжемся с вами в течение 24 часов для обсуждения деталей проекта
-                    </p>
-                    <div class="order-features">
-                        <div class="feature">
-                            <span class="feature-icon">✓</span>
-                            <span>Бесплатная консультация</span>
+        <main class="main-content">
+            <section class="controls-section">
+                <div class="card">
+                    <h2>Панель управления</h2>
+                    <div class="controls">
+                        <div class="input-group">
+                            <label for="number-input">Введите число (0-999999):</label>
+                            <input type="number" id="number-input" min="0" max="999999" value="0" class="number-input">
+                            <button id="set-number" class="btn btn-primary">Показать на абакусе</button>
                         </div>
-                        <div class="feature">
-                            <span class="feature-icon">✓</span>
-                            <span>Правки до результата</span>
+                        <div class="button-group">
+                            <button id="reset" class="btn btn-secondary">Сбросить</button>
+                            <button id="random" class="btn btn-accent">Случайное число</button>
                         </div>
-                        <div class="feature">
-                            <span class="feature-icon">✓</span>
-                            <span>Гарантия качества</span>
+                    </div>
+                    <div class="current-value">
+                        <span>Текущее значение:</span>
+                        <span id="display-value" class="value-display">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="abacus-section">
+                <div class="card abacus-card">
+                    <h2>Соробан (Японский абакус)</h2>
+                    <div class="abacus-container">
+                        <div id="abacus" class="abacus">
+                            <!-- JavaScript will generate the abacus -->
+                        </div>
+                    </div>
+                    <div class="hint-text">
+                        <p>💡 Нажимайте на бусины, чтобы двигать их</p>
+                        <p>Верхняя бусина = 5, нижние бусины = 1</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tutorial-section">
+                <div class="card">
+                    <h2>Как использовать абакус</h2>
+                    <div class="tutorial-grid">
+                        <div class="tutorial-item">
+                            <div class="step-number">1</div>
+                            <h3>Структура</h3>
+                            <p>Каждый столбец представляет разряд числа (единицы, десятки, сотни и т.д.)</p>
+                        </div>
+                        <div class="tutorial-item">
+                            <div class="step-number">2</div>
+                            <h3>Верхние бусины</h3>
+                            <p>Каждая верхняя бусина равна 5. Опускайте её вниз, чтобы активировать</p>
+                        </div>
+                        <div class="tutorial-item">
+                            <div class="step-number">3</div>
+                            <h3>Нижние бусины</h3>
+                            <p>Каждая нижняя бусина равна 1. Поднимайте их вверх, чтобы активировать</p>
+                        </div>
+                        <div class="tutorial-item">
+                            <div class="step-number">4</div>
+                            <h3>Считывание</h3>
+                            <p>Складывайте активные бусины в каждом столбце для получения цифры</p>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <form class="order-form" id="orderForm">
-                    <div class="form-group">
-                        <label for="name">Ваше имя</label>
-                        <input type="text" id="name" name="name" required placeholder="Иван Иванов">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required placeholder="example@mail.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Телефон</label>
-                        <input type="tel" id="phone" name="phone" required placeholder="+7 (999) 123-45-67">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="genre">Жанр песни</label>
-                        <select id="genre" name="genre" required>
-                            <option value="">Выберите жанр</option>
-                            <option value="pop">Поп</option>
-                            <option value="rock">Рок</option>
-                            <option value="rap">Рэп/Хип-хоп</option>
-                            <option value="electronic">Электронная музыка</option>
-                            <option value="ballad">Баллада</option>
-                            <option value="jazz">Джаз</option>
-                            <option value="other">Другое</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="mood">Настроение песни</label>
-                        <input type="text" id="mood" name="mood" placeholder="Романтическое, энергичное, грустное...">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Опишите вашу идею</label>
-                        <textarea id="description" name="description" rows="5" required placeholder="Расскажите о теме песни, для какого повода, какие эмоции должна передавать, есть ли у вас референсы..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lyrics">Есть ли готовый текст?</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="lyrics" value="yes">
-                                <span>Да, есть текст</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="lyrics" value="no" checked>
-                                <span>Нужна помощь с текстом</span>
-                            </label>
+            <section class="practice-section">
+                <div class="card">
+                    <h2>Практика</h2>
+                    <div class="practice-content">
+                        <div class="challenge">
+                            <h3>Текущее задание:</h3>
+                            <div class="challenge-number" id="challenge-number">42</div>
+                            <button id="check-answer" class="btn btn-primary">Проверить ответ</button>
+                            <button id="new-challenge" class="btn btn-secondary">Новое задание</button>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="deadline">Желаемый срок выполнения</label>
-                        <input type="date" id="deadline" name="deadline">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="budget">Ориентировочный бюджет</label>
-                        <select id="budget" name="budget">
-                            <option value="">Выберите диапазон</option>
-                            <option value="10000-20000">10 000 - 20 000 ₽</option>
-                            <option value="20000-50000">20 000 - 50 000 ₽</option>
-                            <option value="50000-100000">50 000 - 100 000 ₽</option>
-                            <option value="100000+">Более 100 000 ₽</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-large">
-                        Отправить заявку
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <span class="logo-icon">🎵</span>
-                        <span class="logo-text">SongStudio</span>
-                    </div>
-                    <p>Профессиональная студия звукозаписи</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Контакты</h4>
-                    <p>Email: info@songstudio.ru</p>
-                    <p>Телефон: +7 (999) 123-45-67</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Социальные сети</h4>
-                    <div class="social-links">
-                        <a href="#" class="social-link">VK</a>
-                        <a href="#" class="social-link">Instagram</a>
-                        <a href="#" class="social-link">YouTube</a>
+                        <div class="result-message" id="result-message"></div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 SongStudio. Все права защищены.</p>
-            </div>
-        </div>
-    </footer>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Создано для изучения древнего искусства счета на абакусе</p>
+        </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>
