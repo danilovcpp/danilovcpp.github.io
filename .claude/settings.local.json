@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest abacus-app --typescript --tailwind --app --no-src-dir --import-alias \"@/*\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
