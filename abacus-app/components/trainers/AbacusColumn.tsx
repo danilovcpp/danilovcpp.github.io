@@ -4,6 +4,7 @@ import React from 'react';
 import { Bead } from './Bead';
 import { BeadPosition } from '@/types';
 import { getSuperscript } from '@/lib/utils';
+import styles from './AbacusColumn.module.scss';
 
 interface AbacusColumnProps {
   column: number;
@@ -27,18 +28,18 @@ export const AbacusColumn: React.FC<AbacusColumnProps> = ({
     .sort((a, b) => a.index - b.index);
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="text-sm text-white/70 mb-1 font-semibold">{label}</div>
+    <div className={styles.column}>
+      <div className={styles.label}>{label}</div>
 
-      <div className="relative">
+      <div className={styles.rodContainer}>
         {/* Rod */}
-        <div className="w-1.5 h-[300px] bg-gradient-to-b from-gray-600 to-gray-800 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]" />
+        <div className={styles.rod} />
 
         {/* Divider */}
-        <div className="absolute w-8 h-1 bg-gradient-primary left-1/2 -translate-x-1/2 top-20 rounded-full shadow-[0_0_10px_rgba(102,126,234,0.5)]" />
+        <div className={styles.divider} />
 
         {/* Top bead container */}
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 flex flex-col gap-2">
+        <div className={styles.topBeadsContainer}>
           {topBead && (
             <Bead
               active={topBead.active}
@@ -49,7 +50,7 @@ export const AbacusColumn: React.FC<AbacusColumnProps> = ({
         </div>
 
         {/* Bottom beads container */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col gap-2">
+        <div className={styles.bottomBeadsContainer}>
           {bottomBeads.map((bead) => (
             <Bead
               key={`${bead.column}-${bead.type}-${bead.index}`}

@@ -1,0 +1,57 @@
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.rodContainer {
+  position: relative;
+}
+
+.rod {
+  width: 0.375rem;
+  height: 300px;
+  background: linear-gradient(to bottom, #4b5563, #1f2937);
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.divider {
+  position: absolute;
+  width: 2rem;
+  height: 0.25rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  left: 50%;
+  transform: translateX(-50%);
+  top: 5rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+}
+
+.topBeadsContainer {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bottomBeadsContainer {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

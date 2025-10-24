@@ -1,0 +1,28 @@
+.bead {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  transition: all 300ms ease-in-out;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.6);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    box-shadow: 0 5px 25px rgba(67, 233, 123, 0.6);
+  }
+
+  &.inactive {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+}
